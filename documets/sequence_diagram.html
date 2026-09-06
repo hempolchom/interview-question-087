@@ -114,7 +114,7 @@
             alt ข้อมูลไม่สมบูรณ์ หรือ รหัสผ่านไม่ตรงกัน
               FE-->>User: แสดง Alert (SweetAlert2) + ไฮไลท์กรอบ/พื้นหลังสีแดง
             else ข้อมูลถูกต้องครบถ้วน
-              FE->>BE: POST /api/v1/auth/register (JSON)
+              FE->>BE: POST /api/auth/register (JSON)
               BE->>DB: Query เช็ก Username ซ้ำ
               alt Username ซ้ำในระบบ
                 DB-->>BE: พบข้อมูลเดิม
@@ -153,7 +153,7 @@
             alt ข้อมูลไม่สมบูรณ์
               FE-->>User: แสดง Alert (SweetAlert2) + ไฮไลท์กรอบสีแดง
             else ข้อมูลครบถ้วน
-              FE->>BE: POST /api/v1/auth/login (JSON)
+              FE->>BE: POST /api/auth/login (JSON)
               BE->>DB: SELECT * FROM users WHERE username = ?
               alt ไม่พบ User หรือ รหัสผ่านไม่ถูกต้อง (Bcrypt Compare)
                 DB-->>BE: คืนค่า ไม่พบข้อมูล / Password mismatch

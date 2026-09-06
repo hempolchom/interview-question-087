@@ -141,7 +141,7 @@
           </li>
           <li><strong>การประมวลผลฝั่งเซิร์ฟเวอร์ (Server Processing):</strong>
             <ul>
-              <li>ส่ง HTTP POST ไปที่ Go Backend (<span class="code-inline">/api/v1/auth/register</span>)</li>
+              <li>ส่ง HTTP POST ไปที่ Go Backend (<span class="code-inline">/api/auth/register</span>)</li>
               <li>ระบบตรวจสอบความซ้ำซ้อนของ <span class="code-inline">Username</span> ในฐานข้อมูล PostgreSQL</li>
               <li>หากไม่ซ้ำ รหัสผ่านจะถูกเข้ารหัสด้วย <span class="code-inline">Bcrypt</span> และบันทึกลงตาราง <span class="code-inline">users</span></li>
             </ul>
@@ -156,7 +156,7 @@
         <p>ขั้นตอนการยืนยันตัวตนสำหรับผู้ใช้งานที่มีบัญชีในระบบเรียบร้อยแล้ว:</p>
         <ol>
           <li><strong>การป้อนข้อมูล (Credentials Input):</strong> ผู้ใช้กรอก <span class="code-inline">User</span> และ <span class="code-inline">Password</span></li>
-          <li><strong>การส่งข้อมูลพิสูจน์ตัวตน (Authentication Request):</strong> ส่ง HTTP POST ไปที่ Go Backend (<span class="code-inline">/api/v1/auth/login</span>)</li>
+          <li><strong>การส่งข้อมูลพิสูจน์ตัวตน (Authentication Request):</strong> ส่ง HTTP POST ไปที่ Go Backend (<span class="code-inline">/api/auth/login</span>)</li>
           <li><strong>การตรวจสอบสิทธิ์ (Verification):</strong>
             <ul>
               <li>Go Backend ทำการดึงข้อมูลจากตาราง <span class="code-inline">users</span> ตาม <span class="code-inline">Username</span></li>

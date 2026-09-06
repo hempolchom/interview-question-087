@@ -218,7 +218,7 @@ func TestLogin_Success(t *testing.T) {
     router := setupTestRouter()
 
     payload := `{"username":"testuser", "password":"password123"}`
-    req, _ := http.NewRequest("POST", "/api/v1/auth/login", strings.NewReader(payload))
+    req, _ := http.NewRequest("POST", "/api/auth/login", strings.NewReader(payload))
     req.Header.Set("Content-Type", "application/json")
 
     w := httptest.NewRecorder()
