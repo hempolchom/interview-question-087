@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entity Relationship Diagram - Authentication System</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --border: #e0e0e0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      color: var(--primary-dark);
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 35px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 2px solid #e8f5e9;
+      padding-bottom: 12px;
+      font-size: 24px;
+    }
+
+    .diagram-container {
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      overflow-x: auto;
+      min-height: 400px;
+    }
+
+    /* ขยายขนาด SVG ของ Mermaid ให้ใหญ่ชัดเจน */
+    .mermaid svg {
+      width: 100% !important;
+      max-width: 1100px !important;
+      height: auto !important;
+      font-size: 16px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 15px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    .badge-pk {
+      background-color: #ffb74d;
+      color: #e65100;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge-uk {
+      background-color: #81c784;
+      color: #1b5e20;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Entity Relationship Diagram (ERD)</h1>
+      <p>ผังความสัมพันธ์ตารางข้อมูลและโครงสร้าง Database (Database Schema Architecture)</p>
+    </div>
+
+    <!-- 1. ER Diagram -->
+    <div class="card">
+      <h2>1. Entity Diagram (ตาราง users)</h2>
+      <div class="diagram-container">
+        <pre class="mermaid">
+          erDiagram
+            users {
+              uint id PK "รหัสผู้ใช้งาน (Auto Increment)"
+              varchar username UK "ชื่อบัญชีผู้ใช้งาน (Unique, Eng + Num)"
+              text password_hash "รหัสผ่านที่ผ่านการเข้ารหัส (Bcrypt)"
+              timestamptz created_at "วันเวลาที่บันทึกข้อมูล"
+            }
+        </pre>
+      </div>
+    </div>
+
+    <!-- 2. Data Dictionary -->
+    <div class="card">
+      <h2>2. Data Dictionary (รายละเอียดโครงสร้างฟิลด์ข้อมูล)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Column Name</th>
+            <th>Data Type</th>
+            <th>Key / Constraint</th>
+            <th>Null Ability</th>
+            <th>Description / Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>id</strong></td>
+            <td>SERIAL (int4)</td>
+            <td><span class="badge-pk">PRIMARY KEY</span></td>
+            <td>NOT NULL</td>
+            <td>รหัสประจำตัวผู้ใช้งาน (Auto Increment Sequence)</td>
+          </tr>
+          <tr>
+            <td><strong>username</strong></td>
+            <td>VARCHAR(100)</td>
+            <td><span class="badge-uk">UNIQUE KEY</span></td>
+            <td>NOT NULL</td>
+            <td>ชื่อบัญชีสำหรับเข้าสู่ระบบ (เฉพาะ a-z, A-Z, 0-9, _, -)</td>
+          </tr>
+          <tr>
+            <td><strong>password_hash</strong></td>
+            <td>TEXT</td>
+            <td>-</td>
+            <td>NOT NULL</td>
+            <td>รหัสผ่านที่ผ่านการเข้ารหัสความปลอดภัยด้วย Bcrypt</td>
+          </tr>
+          <tr>
+            <td><strong>created_at</strong></td>
+            <td>TIMESTAMPTZ</td>
+            <td>-</td>
+            <td>NULL</td>
+            <td>วัน เวลาที่สร้างบัญชีผู้ใช้ (บันทึกอัตโนมัติ)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      er: { useMaxWidth: false }
+    });
+  </script>
+</body>
+</html>

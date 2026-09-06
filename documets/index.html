@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Documentation Dashboard</title>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --bg: #1e1e1e;
+      --tab-bg: #2d2d2d;
+      --tab-hover: #3e3e3e;
+      --text: #ffffff;
+      --border: #444444;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #111111;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Tab Bar Navigation */
+    .tab-bar {
+      display: flex;
+      background-color: var(--tab-bg);
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      padding: 5px 10px 0 10px;
+      gap: 4px;
+    }
+
+    .tab-button {
+      background-color: #222222;
+      color: #aaaaaa;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      padding: 8px 16px;
+      font-size: 13px;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .tab-button:hover {
+      background-color: var(--tab-hover);
+      color: #ffffff;
+    }
+
+    .tab-button.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      font-weight: bold;
+      border-color: var(--primary);
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>📂 Authentication System - Project Documentation</h1>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tab-bar">
+    <button class="tab-button active" onclick="openDoc('api_document.html', this)">API Specs</button>
+    <button class="tab-button" onclick="openDoc('functional_specification_document.html', this)">FSD Document</button>
+    <button class="tab-button" onclick="openDoc('business_flow_document.html', this)">Business Flow</button>
+    <button class="tab-button" onclick="openDoc('usecase_diagram.html', this)">Use Case</button>
+    <button class="tab-button" onclick="openDoc('activity_diagram.html', this)">Activity Diagram</button>
+    <button class="tab-button" onclick="openDoc('sequence_diagram.html', this)">Sequence Diagram</button>
+    <button class="tab-button" onclick="openDoc('class_diagram.html', this)">Class Diagram</button>
+    <button class="tab-button" onclick="openDoc('uml_diagram.html', this)">Component UML</button>
+    <button class="tab-button" onclick="openDoc('data_flow_diagram.html', this)">DFD Diagram</button>
+    <button class="tab-button" onclick="openDoc('entity_relationship_diagram.html', this)">ER Diagram</button>
+    <button class="tab-button" onclick="openDoc('unit_test_document.html', this)">Unit Test Cases</button>
+  </div>
+
+  <!-- Viewer Area -->
+  <div class="content-area">
+    <iframe id="docFrame" src="api_document.html"></iframe>
+  </div>
+
+  <script>
+    function openDoc(filename, element) {
+      document.getElementById('docFrame').src = filename;
+      const buttons = document.querySelectorAll('.tab-button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

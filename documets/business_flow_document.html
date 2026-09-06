@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Flow Document - Authentication System</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #2E7D32;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --border-color: #e0e0e0;
+      --danger-color: #e53935;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 30px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 25px 30px;
+      border-radius: 8px 8px 0 0;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .header p {
+      margin: 8px 0 0 0;
+      opacity: 0.9;
+      font-size: 15px;
+    }
+
+    .content {
+      background-color: var(--card-bg);
+      padding: 35px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .section {
+      margin-bottom: 35px;
+    }
+
+    .section-title {
+      color: var(--secondary-color);
+      font-size: 20px;
+      border-bottom: 2px solid #e8f5e9;
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #f8f9fa;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge-primary { background-color: #e8f5e9; color: var(--secondary-color); }
+    .badge-danger { background-color: #ffebee; color: var(--danger-color); }
+
+    ul, ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .code-inline {
+      background-color: #f1f1f1;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Business Flow Document (BFD)</h1>
+      <p>เอกสารอธิบายกระบวนการทางธุรกิจและการไหลของงาน (Business Logic & Operational Workflow)</p>
+    </div>
+
+    <div class="content">
+
+      <!-- 1. Registration Flow -->
+      <div class="section">
+        <h2 class="section-title">1. กระบวนการสมัครสมาชิก (User Registration Flow)</h2>
+        <p>ขั้นตอนการทำงานทางธุรกิจเมื่อผู้ใช้งานใหม่ต้องการลงทะเบียนเข้าสู่ระบบ:</p>
+        <ol>
+          <li><strong>การป้อนข้อมูล (Data Input):</strong> ผู้ใช้กรอก <span class="code-inline">User</span>, <span class="code-inline">Password</span> และ <span class="code-inline">Confirm Password</span></li>
+          <li><strong>การกรองข้อมูลแบบเรียลไทม์ (Input Sanitization):</strong> <span class="code-inline">SqlCleanDirective</span> กรองตัวอักษรไม่อนุญาตออกทันที อนุญาตเฉพาะอักขระ <span class="code-inline">a-z, A-Z, 0-9, _, -</span></li>
+          <li><strong>การตรวจสอบความถูกต้อง (Client-Side Validation):</strong>
+            <ul>
+              <li>หากไม่ได้กรอกข้อมูล ระบบจะแสดงกรอบและพื้นหลังสีแดงอ่อน (<span class="code-inline">#ffebee</span>) พร้อมเตือนด้วย SweetAlert2</li>
+              <li>หาก <span class="code-inline">Password</span> และ <span class="code-inline">Confirm Password</span> ไม่ตรงกัน ระบบจะเปลี่ยนพื้นหลังช่องรหัสผ่านเป็นสีแดงอ่อนและเตือน "รหัสผ่านไม่ตรงกัน"</li>
+            </ul>
+          </li>
+          <li><strong>การประมวลผลฝั่งเซิร์ฟเวอร์ (Server Processing):</strong>
+            <ul>
+              <li>ส่ง HTTP POST ไปที่ Go Backend (<span class="code-inline">/api/v1/auth/register</span>)</li>
+              <li>ระบบตรวจสอบความซ้ำซ้อนของ <span class="code-inline">Username</span> ในฐานข้อมูล PostgreSQL</li>
+              <li>หากไม่ซ้ำ รหัสผ่านจะถูกเข้ารหัสด้วย <span class="code-inline">Bcrypt</span> และบันทึกลงตาราง <span class="code-inline">users</span></li>
+            </ul>
+          </li>
+          <li><strong>ผลลัพธ์ (Outcome):</strong> แสดง Pop-up แจ้งเตือนสำเร็จและ Redirect ผู้ใช้ไปยังหน้าเข้าสู่ระบบอัตโนมัติ</li>
+        </ol>
+      </div>
+
+      <!-- 2. Authentication Flow -->
+      <div class="section">
+        <h2 class="section-title">2. กระบวนการเข้าสู่ระบบและพิสูจน์ตัวตน (Authentication & Login Flow)</h2>
+        <p>ขั้นตอนการยืนยันตัวตนสำหรับผู้ใช้งานที่มีบัญชีในระบบเรียบร้อยแล้ว:</p>
+        <ol>
+          <li><strong>การป้อนข้อมูล (Credentials Input):</strong> ผู้ใช้กรอก <span class="code-inline">User</span> และ <span class="code-inline">Password</span></li>
+          <li><strong>การส่งข้อมูลพิสูจน์ตัวตน (Authentication Request):</strong> ส่ง HTTP POST ไปที่ Go Backend (<span class="code-inline">/api/v1/auth/login</span>)</li>
+          <li><strong>การตรวจสอบสิทธิ์ (Verification):</strong>
+            <ul>
+              <li>Go Backend ทำการดึงข้อมูลจากตาราง <span class="code-inline">users</span> ตาม <span class="code-inline">Username</span></li>
+              <li>เปรียบเทียบรหัสผ่านด้วย <span class="code-inline">Bcrypt Compare</span></li>
+            </ul>
+          </li>
+          <li><strong>การออกเหรียญยืนยันตัวตน (JWT Issuance):</strong>
+            <ul>
+              <li>หากถูกต้อง Backend สร้าง <span class="code-inline">JWT Token</span> และส่งกลับไปที่ Frontend</li>
+              <li>Frontend นำ Token ไปเก็บบันทึกไว้ใน <span class="code-inline">localStorage</span> สำหรับใช้แนบ Header Authorization ใน API ถัดไป</li>
+            </ul>
+          </li>
+          <li><strong>ผลลัพธ์ (Outcome):</strong> แสดง Pop-up แจ้งเตือนเข้าสู่ระบบสำเร็จ แล้วนำผู้ใช้เข้าสู่หน้า Welcome/Dashboard</li>
+        </ol>
+      </div>
+
+      <!-- 3. Business Rules Summary -->
+      <div class="section">
+        <h2 class="section-title">3. สรุปกฎทางธุรกิจ (Business Rules Matrix)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 20%;">Rule ID</th>
+              <th style="width: 30%;">Business Rule</th>
+              <th>System Enforcement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>BR-001</strong></td>
+              <td>Username Format Constraint</td>
+              <td>จำกัดตัวอักษรเฉพาะภาษาอังกฤษ ตัวเลข ขีดกลาง และขีดล่าง (<span class="code-inline">^[a-zA-Z0-9_-]+$</span>)</td>
+            </tr>
+            <tr>
+              <td><strong>BR-002</strong></td>
+              <td>Password Match Integrity</td>
+              <td>รหัสผ่านยืนยันต้องตรงกัน 100% มิฉะนั้นจะไม่สามารถส่งคำขอไปยัง Backend ได้</td>
+            </tr>
+            <tr>
+              <td><strong>BR-003</strong></td>
+              <td>Username Uniqueness</td>
+              <td>บัญชีผู้ใช้งานห้ามซ้ำกันในระบบ (Enforced by DB Unique Index & API Logic)</td>
+            </tr>
+            <tr>
+              <td><strong>BR-004</strong></td>
+              <td>Password Storage Security</td>
+              <td>ห้ามจัดเก็บรหัสผ่านแบบ Plaintext ให้ใช้การ Hash ด้วย Bcrypt เท่านั้น</td>
+            </tr>
+            <tr>
+              <td><strong>BR-005</strong></td>
+              <td>Session Stateless Security</td>
+              <td>การยืนยันตัวตนต้องใช้ JWT (JSON Web Token) แบบ Bearer Authentication</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

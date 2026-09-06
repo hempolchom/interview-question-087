@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UML Diagrams - Authentication System</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --border: #e0e0e0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      color: var(--primary-dark);
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 35px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 2px solid #e8f5e9;
+      padding-bottom: 12px;
+      font-size: 24px;
+    }
+
+    .diagram-container {
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      overflow-x: auto;
+      min-height: 450px;
+    }
+
+    /* ขยายขนาด SVG ของ Mermaid ให้ใหญ่ชัดเจน */
+    .mermaid svg {
+      width: 100% !important;
+      max-width: 1200px !important;
+      height: auto !important;
+      font-size: 16px !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>UML Diagrams</h1>
+      <p>แผนภาพแสดงโครงสร้างซอฟต์แวร์และสถาปัตยกรรมระบบ (System Architecture & Structural Diagrams)</p>
+    </div>
+
+    <!-- 1. Class Diagram -->
+    <div class="card">
+      <h2>1. Class Diagram (โครงสร้างระดับคลาสและโมเดล)</h2>
+      <div class="diagram-container">
+        <pre class="mermaid">
+          classDiagram
+            direction TB
+
+            class User {
+              +uint ID
+              +string Username
+              +string PasswordHash
+              +time.Time CreatedAt
+            }
+
+            class AuthController {
+              +Register(c *gin.Context)
+              +Login(c *gin.Context)
+              +GetProfile(c *gin.Context)
+            }
+
+            class AuthMiddleware {
+              +GenerateToken(userID uint, username string) string
+              +AuthMiddleware() gin.HandlerFunc
+            }
+
+            class SqlCleanDirective {
+              -RegExp regex
+              +onInput(event InputEvent)
+            }
+
+            class RegisterComponent {
+              +FormGroup registerForm
+              +boolean showPassword
+              +boolean showConfirmPassword
+              +boolean isSubmitted
+              +onSubmit()
+            }
+
+            class LoginComponent {
+              +FormGroup loginForm
+              +boolean showPassword
+              +boolean isSubmitted
+              +onSubmit()
+            }
+
+            RegisterComponent ..> SqlCleanDirective : Uses
+            LoginComponent ..> SqlCleanDirective : Uses
+            RegisterComponent ..> AuthController : HTTP POST (Register)
+            LoginComponent ..> AuthController : HTTP POST (Login)
+            AuthController ..> User : Query / Create
+            AuthController ..> AuthMiddleware : Generate Token
+        </pre>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <h2>2. Component Diagram (สถาปัตยกรรมองค์ประกอบของระบบ)</h2>
+      <div class="diagram-container">
+        <pre class="mermaid">
+          graph TB
+            subgraph Frontend["Frontend (Angular Framework)"]
+              direction TB
+              RC["Register Component"]
+              LC["Login Component"]
+              SD["SqlClean Directive"]
+              AS["Auth Service"]
+              
+              RC --> SD
+              LC --> SD
+              RC --> AS
+              LC --> AS
+            end
+
+            subgraph Backend["Backend (Go Gin Framework)"]
+              direction TB
+              RM["Router & JWT Middleware"]
+              AC["Auth Controller"]
+              DBE["GORM Engine"]
+
+              RM --> AC
+              AC --> DBE
+            end
+
+            subgraph Database["Database Server"]
+              PG[("PostgreSQL\n(interview_db)")]
+            end
+
+            AS -- "REST API (HTTP/JSON)" --> RM
+            DBE -- "SQL Query / AutoMigrate" --> PG
+
+            classDef feStyle fill:#e8f5e9,stroke:#4CAF50,stroke-width:2px,color:#1b5e20;
+            classDef beStyle fill:#e3f2fd,stroke:#2196F3,stroke-width:2px,color:#0d47a1;
+            classDef dbStyle fill:#fff3e0,stroke:#FF9800,stroke-width:2px,color:#e65100;
+
+            class RC,LC,SD,AS feStyle;
+            class RM,AC,DBE beStyle;
+            class PG dbStyle;
+        </pre>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      flowchart: { useMaxWidth: false, htmlLabels: true },
+      class: { useMaxWidth: false }
+    });
+  </script>
+</body>
+</html>

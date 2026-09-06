@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Use Case Diagram - Authentication System</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --border: #e0e0e0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 30px 20px;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: var(--primary-dark);
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 18px;
+      color: #666;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 2px solid #e8f5e9;
+      padding-bottom: 12px;
+      font-size: 26px;
+    }
+
+    .diagram-container {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    .mermaid {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .mermaid svg {
+      width: 100% !important;
+      min-width: 1200px !important;
+      max-width: 1600px !important;
+      height: auto !important;
+      font-size: 20px !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Use Case Diagram</h1>
+      <p>แผนภาพแสดงขอบเขตการทำงานของระบบและผู้ใช้งาน (System Use Cases)</p>
+    </div>
+
+    <div class="card">
+      <h2>Use Case Diagram (Authentication System Boundary)</h2>
+      <div class="diagram-container">
+        <pre class="mermaid">
+          graph LR
+            User(("User / Guest"))
+
+            subgraph System_Boundary ["Authentication System"]
+              UC1(["Register (สมัครสมาชิก)"])
+              UC2(["Login (เข้าสู่ระบบ)"])
+              UC3(["Toggle Password Visibility (ซ่อน/แสดงรหัสผ่าน)"])
+              UC4(["Sanitize Input (กรองอักขระพิเศษ)"])
+              UC5(["Validate Password Match (ตรวจรหัสผ่านตรงกัน)"])
+              UC6(["View Profile (ดูข้อมูลส่วนตัว)"])
+            end
+
+            User --> UC1
+            User --> UC2
+            User --> UC3
+            User --> UC6
+
+            UC1 -. "include" .-> UC4
+            UC1 -. "include" .-> UC5
+            UC2 -. "include" .-> UC4
+
+            classDef actorStyle fill:#e8f5e9,stroke:#2E7D32,stroke-width:2px,color:#1b5e20;
+            classDef ucStyle fill:#ffffff,stroke:#4CAF50,stroke-width:2px,color:#333;
+
+            class User actorStyle;
+            class UC1,UC2,UC3,UC4,UC5,UC6 ucStyle;
+        </pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      fontSize: 20,
+      flowchart: { useMaxWidth: false, htmlLabels: true }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Functional Specification Document (FSD) - Authentication System</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #2E7D32;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --border-color: #e0e0e0;
+      --danger-color: #e53935;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 30px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 30px;
+      border-radius: 8px 8px 0 0;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 10px 0 0 0;
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    .content {
+      background-color: var(--card-bg);
+      padding: 40px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      color: var(--secondary-color);
+      font-size: 22px;
+      border-bottom: 2px solid #e8f5e9;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 15px;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #f8f9fa;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge-req {
+      background-color: #ffebee;
+      color: var(--danger-color);
+    }
+
+    .badge-opt {
+      background-color: #e8f5e9;
+      color: var(--secondary-color);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .code-inline {
+      background-color: #f1f1f1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Functional Specification Document (FSD)</h1>
+      <p>ข้อกำหนดฟังก์ชันการทำงานระบบพิสูจน์ตัวตน (Authentication System - Full Stack)</p>
+    </div>
+
+    <div class="content">
+
+      <!-- 1. System Overview -->
+      <div class="section">
+        <h2 class="section-title">1. ภาพรวมระบบ (System Overview)</h2>
+        <p>ระบบพิสูจน์ตัวตน (Authentication System) พัฒนาขึ้นแบบ Full-Stack เพื่อให้บริการสมัครสมาชิก (Register) และเข้าสู่ระบบ (Login) อย่างปลอดภัย โดยมี Frontend พัฒนาด้วย Angular (Standalone Components), Backend พัฒนาด้วย Go (Gin Framework / GORM) และจัดการข้อมูลด้วย PostgreSQL บน Docker Environment</p>
+      </div>
+
+      <!-- 2. Functional Requirements -->
+      <div class="section">
+        <h2 class="section-title">2. ข้อกำหนดฟังก์ชันการทำงาน (Functional Requirements)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 15%;">Module</th>
+              <th style="width: 25%;">Feature</th>
+              <th>Description / Rule</th>
+              <th style="width: 15%;">Priority</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Register (IT 02-2)</strong></td>
+              <td>User Registration</td>
+              <td>
+                <ul>
+                  <li>กรอกชื่อผู้ใช้ (User), รหัสผ่าน (Password) และ ยืนยันรหัสผ่าน (Confirm Password)</li>
+                  <li>ตรวจสอบความถูกต้องของข้อมูลก่อนส่ง API (Client-side Validation)</li>
+                  <li>บันทึกผู้ใช้ลงฐานข้อมูลพร้อมสุ่ม Salt เข้ารหัส <span class="code-inline">bcrypt</span></li>
+                </ul>
+              </td>
+              <td><span class="badge badge-req">HIGH</span></td>
+            </tr>
+            <tr>
+              <td><strong>Login (IT 02-1)</strong></td>
+              <td>User Authentication</td>
+              <td>
+                <ul>
+                  <li>กรอกชื่อผู้ใช้ (User) และ รหัสผ่าน (Password)</li>
+                  <li>ตรวจสอบข้อมูลกับ PostgreSQL Database ผ่าน Go API</li>
+                  <li>คืนค่า <span class="code-inline">JWT Token</span> เมื่อยืนยันตัวตนสำเร็จ และเก็บลง <span class="code-inline">localStorage</span></li>
+                </ul>
+              </td>
+              <td><span class="badge badge-req">HIGH</span></td>
+            </tr>
+            <tr>
+              <td><strong>UI / UX Validation</strong></td>
+              <td>Input Restriction & Highlight</td>
+              <td>
+                <ul>
+                  <li><strong>User Field Restriction:</strong> อนุญาตเฉพาะภาษาอังกฤษ ตัวเลข และขีด (<span class="code-inline">a-z, A-Z, 0-9, _, -</span>) ผ่าน <span class="code-inline">SqlCleanDirective</span></li>
+                  <li><strong>Required Field Marker:</strong> แสดงเครื่องหมายดอกจันสีแดง <span class="code-inline" style="color:red;">*</span> ท้าย Label</li>
+                  <li><strong>Error Feedback:</strong> แสดงกรอบสีแดงและพื้นหลังสีแดงอ่อน (<span class="code-inline">#ffebee</span>) เมื่อไม่กรอกข้อมูล หรือกรอกรหัสผ่านไม่ตรงกัน</li>
+                  <li><strong>Toggle Password:</strong> ปุ่มไอคอนดวงตาสลับเปิด-ปิดดู Password และ Confirm Password</li>
+                  <li><strong>Notification:</strong> แสดง SweetAlert2 แจ้งสถานะ Success, Warning และ Error</li>
+                </ul>
+              </td>
+              <td><span class="badge badge-req">HIGH</span></td>
+            </tr>
+            <tr>
+              <td><strong>Security & Middleware</strong></td>
+              <td>Data Security</td>
+              <td>
+                <ul>
+                  <li>กรองอักขระพิเศษสุ่มเสี่ยง SQL Injection / XSS ตั้งแต่ระดับ Client</li>
+                  <li>ป้องกันการสมัครสมาชิกด้วยชื่อผู้ใช้ (Username) ซ้ำในระบบ</li>
+                  <li>ปกป้อง Endpoint ด้วย JWT Middleware</li>
+                </ul>
+              </td>
+              <td><span class="badge badge-req">HIGH</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 3. Non-Functional Requirements -->
+      <div class="section">
+        <h2 class="section-title">3. ข้อกำหนดที่ไม่ใช่ฟังก์ชันการทำงาน (Non-Functional Requirements)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 25%;">Category</th>
+              <th>Specification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Security</strong></td>
+              <td>
+                <ul>
+                  <li>รหัสผ่านต้องได้รับการ Hash ด้วยอัลกอริทึม <span class="code-inline">bcrypt</span> เท่านั้น ห้ามบันทึก Plaintext</li>
+                  <li>การยืนยันสิทธิ์ API ใช้มาตรฐาน <span class="code-inline">Bearer JWT Token</span></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Performance</strong></td>
+              <td>
+                <ul>
+                  <li>API Response Time ไม่เกิน 500ms สำหรับการสมัครสมาชิกและเข้าสู่ระบบ</li>
+                  <li>Database Indexing บนฟิลด์ <span class="code-inline">username</span> เพื่อความเร็วในการ Query</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Usability & Compatibility</strong></td>
+              <td>
+                <ul>
+                  <li>รองรับการแสดงผลแบบ Responsive บน Web Browsers มาตรฐาน (Chrome, Firefox, Edge, Safari)</li>
+                  <li>มี Visual Feedback ชัดเจนเมื่อกรอกข้อมูลผิดพลาด</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Deployment Environment</strong></td>
+              <td>
+                <ul>
+                  <li>รองรับการรันผ่าน <span class="code-inline">Docker Compose</span> เพื่อ Container Orchestration</li>
+                  <li>รองรับการพัฒนาแบบรันแยกบริการ (Manual Local Setup)</li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 4. Screen Flow & Error Handling -->
+      <div class="section">
+        <h2 class="section-title">4. การจัดการข้อผิดพลาดและข้อความแจ้งเตือน (Error Handling & Messages)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 25%;">Scenario</th>
+              <th style="width: 35%;">UI / System Behavior</th>
+              <th>Alert Message (SweetAlert2)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>กรอกข้อมูลไม่ครบถ้วน / ฟิลด์ว่าง</td>
+              <td>ไฮไลท์กรอบแดง + พื้นหลังแดงอ่อนบน Input ที่ว่าง</td>
+              <td><strong>Warning:</strong> ข้อมูลไม่ถูกต้อง (กรุณากรอกข้อมูลให้ครบถ้วน)</td>
+            </tr>
+            <tr>
+              <td>Password และ Confirm ไม่ตรงกัน</td>
+              <td>ไฮไลท์กรอบแดง + พื้นหลังแดงอ่อนบน Password & Confirm Input</td>
+              <td><strong>Error:</strong> รหัสผ่านไม่ตรงกัน (กรุณาตรวจสอบรหัสผ่านใหม่อีกครั้ง)</td>
+            </tr>
+            <tr>
+              <td>Username ซ้ำในระบบ (Register)</td>
+              <td>Backend คืนค่า 400 Bad Request</td>
+              <td><strong>Error:</strong> สมัครสมาชิกไม่สำเร็จ (ชื่อผู้ใช้งานนี้มีอยู่ในระบบแล้ว)</td>
+            </tr>
+            <tr>
+              <td>Username/Password ผิด (Login)</td>
+              <td>Backend คืนค่า 401 Unauthorized</td>
+              <td><strong>Error:</strong> เข้าสู่ระบบไม่สำเร็จ (ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง)</td>
+            </tr>
+            <tr>
+              <td>เข้าสู่ระบบสำเร็จ</td>
+              <td>Redirect ไปยังหน้า Welcome</td>
+              <td><strong>Success:</strong> เข้าสู่ระบบสำเร็จ (Timer 1.5s)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

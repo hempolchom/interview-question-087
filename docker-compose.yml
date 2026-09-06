@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: my_postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: interview_db
+    ports:
+      - "9072:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  go-backend:
+    build: ./go-backend
+    container_name: my_go_backend
+    ports:
+      - "9071:9087"
+    environment:
+      - PORT=9087
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=12345
+      - DB_NAME=interview_db
+    depends_on:
+      - postgres-db
+
+  angular-frontend:
+    build: ./angular-frontend
+    container_name: my_angular_frontend
+    ports:
+      - "9070:4200"
+    depends_on:
+      - go-backend
+
+volumes:
+  pgdata:

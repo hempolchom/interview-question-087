@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Diagram - Authentication System</title>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --border: #e0e0e0;
+      --danger: #e53935;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .diagram-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 2px solid #e8f5e9;
+      padding-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .step {
+      width: 85%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      text-align: center;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .step.start-end {
+      background: #333;
+      color: #fff;
+      border-radius: 20px;
+      font-weight: bold;
+      width: 50%;
+    }
+
+    .step.decision {
+      background: #fff8e1;
+      border: 2px solid #ffe082;
+      border-radius: 6px;
+      transform: rotate(0deg);
+      font-weight: 600;
+    }
+
+    .step.error {
+      background: #ffebee;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .arrow {
+      font-size: 18px;
+      color: #888;
+      font-weight: bold;
+    }
+
+    .label {
+      font-size: 12px;
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Activity Diagram</h1>
+      <p>แผนภาพแสดงลำดับการทำงานของระบบ (Registration & Login Process)</p>
+    </div>
+
+    <div class="diagram-grid">
+
+      <!-- Registration Flow -->
+      <div class="card">
+        <h2>1. Registration Process (สมัครสมาชิก)</h2>
+        <div class="flow">
+          <div class="step start-end">เริ่มต้น</div>
+          <div class="arrow">↓</div>
+          <div class="step">กรอกข้อมูล Username, Password, Confirm Password</div>
+          <div class="arrow">↓</div>
+          <div class="step">SqlCleanDirective กรองอักขระพิเศษออกทันที</div>
+          <div class="arrow">↓</div>
+          <div class="step decision">กรอกข้อมูลครบตามเงื่อนไขหรือไม่?</div>
+          <div class="arrow">↓ <span class="label">ไม่ครบ / ผิดเงื่อนไข</span></div>
+          <div class="step error">แสดงกรอบแดง + SweetAlert Warning</div>
+          <div class="arrow">↓ <span class="label">ครบถ้วน</span></div>
+          <div class="step decision">Password ตรงกับ Confirm Password หรือไม่?</div>
+          <div class="arrow">↓ <span class="label">ไม่ตรงกัน</span></div>
+          <div class="step error">แสดง Background แดงอ่อน + SweetAlert Error</div>
+          <div class="arrow">↓ <span class="label">ตรงกัน</span></div>
+          <div class="step">ส่ง POST Request ไปยัง Go Backend</div>
+          <div class="arrow">↓</div>
+          <div class="step decision">Username ซ้ำในระบบหรือไม่?</div>
+          <div class="arrow">↓ <span class="label">ซ้ำ</span></div>
+          <div class="step error">Backend ตอบกลับ 400 + แจ้งเตือนชื่อซ้ำ</div>
+          <div class="arrow">↓ <span class="label">ไม่ซ้ำ</span></div>
+          <div class="step">เข้ารหัส Password ด้วย Bcrypt แล้ว Save ลง PostgreSQL</div>
+          <div class="arrow">↓</div>
+          <div class="step">SweetAlert Success + Redirect ไปหน้า Login</div>
+          <div class="arrow">↓</div>
+          <div class="step start-end">สิ้นสุด</div>
+        </div>
+      </div>
+
+      <!-- Login Flow -->
+      <div class="card">
+        <h2>2. Login Process (เข้าสู่ระบบ)</h2>
+        <div class="flow">
+          <div class="step start-end">เริ่มต้น</div>
+          <div class="arrow">↓</div>
+          <div class="step">กรอก Username และ Password</div>
+          <div class="arrow">↓</div>
+          <div class="step">SqlCleanDirective กรองอักขระพิเศษออกทันที</div>
+          <div class="arrow">↓</div>
+          <div class="step decision">กรอกครบถ้วนหรือไม่?</div>
+          <div class="arrow">↓ <span class="label">ไม่ครบ</span></div>
+          <div class="step error">แสดงกรอบแดง + SweetAlert Warning</div>
+          <div class="arrow">↓ <span class="label">ครบถ้วน</span></div>
+          <div class="step">ส่ง POST Request ไปยัง Go Backend</div>
+          <div class="arrow">↓</div>
+          <div class="step">Backend Query หา User ใน Database</div>
+          <div class="arrow">↓</div>
+          <div class="step decision">พบ User และ รหัสผ่านถูกต้องหรือไม่?</div>
+          <div class="arrow">↓ <span class="label">ไม่ถูกต้อง / ไม่พบข้อมูล</span></div>
+          <div class="step error">Backend ตอบกลับ 401 + SweetAlert Error</div>
+          <div class="arrow">↓ <span class="label">ถูกต้อง</span></div>
+          <div class="step">Backend เจน JWT Token ส่งกลับมายัง Frontend</div>
+          <div class="arrow">↓</div>
+          <div class="step">บันทึก Token ลงใน localStorage</div>
+          <div class="arrow">↓</div>
+          <div class="step">SweetAlert Success + Redirect ไปหน้า Welcome</div>
+          <div class="arrow">↓</div>
+          <div class="step start-end">สิ้นสุด</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation - Authentication Service</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #2E7D32;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --border-color: #e0e0e0;
+      --method-post: #49cc90;
+      --method-get: #61affe;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .header p {
+      margin: 5px 0 0 0;
+      opacity: 0.9;
+    }
+
+    .content {
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .api-card {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+
+    .api-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      background-color: #fafafa;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .method {
+      padding: 6px 12px;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      margin-right: 15px;
+    }
+
+    .method.post { background-color: var(--method-post); }
+    .method.get { background-color: var(--method-get); }
+
+    .endpoint {
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .api-body {
+      padding: 20px;
+    }
+
+    .api-body h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: var(--secondary-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #f5f5f5;
+    }
+
+    pre {
+      background-color: #272822;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-family: 'Consolas', 'Courier New', Courier, monospace;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .required {
+      color: #e53935;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>API Documentation</h1>
+      <p>Authentication System API Service (Go Gin / GORM / PostgreSQL)</p>
+    </div>
+
+    <div class="content">
+
+      <!-- Endpoint: Register -->
+      <div class="api-card">
+        <div class="api-header">
+          <span class="method post">POST</span>
+          <span class="endpoint">/api/v1/auth/register</span>
+        </div>
+        <div class="api-body">
+          <p><strong>รายละเอียด:</strong> สมัครสมาชิกผู้ใช้งานใหม่เข้าสู่ระบบ</p>
+          
+          <h3>Request Payload (JSON)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>username</td>
+                <td>String</td>
+                <td><span class="required">Yes</span></td>
+                <td>ชื่อผู้ใช้งาน (a-z, A-Z, 0-9, _, -)</td>
+              </tr>
+              <tr>
+                <td>password</td>
+                <td>String</td>
+                <td><span class="required">Yes</span></td>
+                <td>รหัสผ่าน (ขั้นต่ำ 6 ตัวอักษร)</td>
+              </tr>
+              <tr>
+                <td>confirmPassword</td>
+                <td>String</td>
+                <td><span class="required">Yes</span></td>
+                <td>รหัสผ่านยืนยัน (ต้องตรงกับ password)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Response (200 OK)</h3>
+<pre>{
+  "success": true,
+  "message": "ลงทะเบียนสำเร็จ"
+}</pre>
+        </div>
+      </div>
+
+      <!-- Endpoint: Login -->
+      <div class="api-card">
+        <div class="api-header">
+          <span class="method post">POST</span>
+          <span class="endpoint">/api/v1/auth/login</span>
+        </div>
+        <div class="api-body">
+          <p><strong>รายละเอียด:</strong> เข้าสู่ระบบเพื่อรับ JWT Token สำหรับการยืนยันตัวตน</p>
+          
+          <h3>Request Payload (JSON)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>username</td>
+                <td>String</td>
+                <td><span class="required">Yes</span></td>
+                <td>ชื่อผู้ใช้งาน</td>
+              </tr>
+              <tr>
+                <td>password</td>
+                <td>String</td>
+                <td><span class="required">Yes</span></td>
+                <td>รหัสผ่าน</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Response (200 OK)</h3>
+<pre>{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "username": "admin01"
+  }
+}</pre>
+        </div>
+      </div>
+
+      <!-- Endpoint: Get Profile -->
+      <div class="api-card">
+        <div class="api-header">
+          <span class="method get">GET</span>
+          <span class="endpoint">/api/v1/auth/profile</span>
+        </div>
+        <div class="api-body">
+          <p><strong>รายละเอียด:</strong> ดึงข้อมูลผู้ใช้งานปัจจุบัน (ต้องส่ง Authorization Bearer Token)</p>
+          
+          <h3>Headers</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Header</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Authorization</td>
+                <td>Bearer &lt;JWT_TOKEN&gt;</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Response (200 OK)</h3>
+<pre>{
+  "success": true,
+  "data": {
+    "id": 1,
+    "username": "admin01",
+    "created_at": "2026-09-06T13:30:00Z"
+  }
+}</pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

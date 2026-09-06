@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sequence Diagram - Authentication System</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --border: #e0e0e0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 30px 20px;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: var(--primary-dark);
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 18px;
+      color: #666;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 2px solid #e8f5e9;
+      padding-bottom: 12px;
+      font-size: 26px;
+    }
+
+    .diagram-container {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    .mermaid {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .mermaid svg {
+      width: 100% !important;
+      min-width: 1200px !important;
+      max-width: 1600px !important;
+      height: auto !important;
+      font-size: 18px !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Sequence Diagram</h1>
+      <p>แผนภาพแสดงลำดับการรับส่งข้อมูลระหว่างองค์ประกอบในระบบ (Interaction Flow)</p>
+    </div>
+
+    <!-- 1. Register Sequence -->
+    <div class="card">
+      <h2>1. Registration Sequence (ขั้นตอนการสมัครสมาชิก)</h2>
+      <div class="diagram-container">
+        <pre class="mermaid">
+          sequenceDiagram
+            autonumber
+            actor User as User / Client
+            participant FE as Angular Frontend
+            participant Dir as SqlCleanDirective
+            participant BE as Go Backend (Gin)
+            participant DB as PostgreSQL DB
+
+            User->>FE: กรอก Username, Password, Confirm Password
+            FE->>Dir: กรอง อักขระพิเศษ (a-z, A-Z, 0-9, _, -)
+            Dir-->>FE: คืนค่า Input ที่ปลอดภัย
+            User->>FE: กดปุ่ม "สมัครสมาชิก"
+            
+            alt ข้อมูลไม่สมบูรณ์ หรือ รหัสผ่านไม่ตรงกัน
+              FE-->>User: แสดง Alert (SweetAlert2) + ไฮไลท์กรอบ/พื้นหลังสีแดง
+            else ข้อมูลถูกต้องครบถ้วน
+              FE->>BE: POST /api/v1/auth/register (JSON)
+              BE->>DB: Query เช็ก Username ซ้ำ
+              alt Username ซ้ำในระบบ
+                DB-->>BE: พบข้อมูลเดิม
+                BE-->>FE: 400 Bad Request (Username taken)
+                FE-->>User: แสดง SweetAlert2 Error
+              else Username ไม่ซ้ำ
+                BE->>BE: เข้ารหัส Password ด้วย Bcrypt
+                BE->>DB: INSERT INTO users (id, username, password_hash)
+                DB-->>BE: บันทึกข้อมูลสำเร็จ
+                BE-->>FE: 200 OK (Registration Success)
+                FE-->>User: แสดง SweetAlert2 Success + Redirect ไปหน้า Login
+              end
+            end
+        </pre>
+      </div>
+    </div>
+
+    <!-- 2. Login Sequence -->
+    <div class="card">
+      <h2>2. Login Sequence (ขั้นตอนการเข้าสู่ระบบ)</h2>
+      <div class="diagram-container">
+        <pre class="mermaid">
+          sequenceDiagram
+            autonumber
+            actor User as User / Client
+            participant FE as Angular Frontend
+            participant Dir as SqlCleanDirective
+            participant BE as Go Backend (Gin)
+            participant DB as PostgreSQL DB
+
+            User->>FE: กรอก Username และ Password
+            FE->>Dir: กรอง อักขระพิเศษ
+            Dir-->>FE: คืนค่า Input ที่ปลอดภัย
+            User->>FE: กดปุ่ม "ลงชื่อเข้าใช้งาน"
+
+            alt ข้อมูลไม่สมบูรณ์
+              FE-->>User: แสดง Alert (SweetAlert2) + ไฮไลท์กรอบสีแดง
+            else ข้อมูลครบถ้วน
+              FE->>BE: POST /api/v1/auth/login (JSON)
+              BE->>DB: SELECT * FROM users WHERE username = ?
+              alt ไม่พบ User หรือ รหัสผ่านไม่ถูกต้อง (Bcrypt Compare)
+                DB-->>BE: คืนค่า ไม่พบข้อมูล / Password mismatch
+                BE-->>FE: 401 Unauthorized
+                FE-->>User: แสดง SweetAlert2 Error (เข้าสู่ระบบไม่สำเร็จ)
+              else ข้อมูลถูกต้อง
+                DB-->>BE: คืนค่า ข้อมูล User
+                BE->>BE: เจน JWT Token (Secret Key)
+                BE-->>FE: 200 OK (Token + User Info)
+                FE->>FE: บันทึก Token ลง localStorage
+                FE-->>User: แสดง SweetAlert2 Success + Redirect ไปหน้า Welcome
+              end
+            end
+        </pre>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      fontSize: 18,
+      sequence: { useMaxWidth: false, htmlLabels: true }
+    });
+  </script>
+</body>
+</html>

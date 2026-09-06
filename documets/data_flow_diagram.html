@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Flow Diagram - Authentication System</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --border: #e0e0e0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      color: var(--primary-dark);
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 15px;
+      color: #666;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 2px solid #e8f5e9;
+      padding-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .diagram-container {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    .mermaid {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ปรับขนาด SVG ให้พอดีหน้าจอ */
+    .mermaid svg {
+      width: 100% !important;
+      max-width: 800px !important;
+      height: auto !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Data Flow Diagram (DFD)</h1>
+      <p>แผนภาพแสดงการไหลของข้อมูลในระบบ (Data Flow Architecture)</p>
+    </div>
+
+    <!-- DFD Level 0 (Context Diagram) -->
+    <div class="card">
+      <h2>1. DFD Level 0 (Context Diagram)</h2>
+      <div class="diagram-container">
+        <pre class="mermaid">
+          graph LR
+            User["User / Client"]
+            Sys(("0.0 Auth System"))
+
+            User -- "1. Credentials / RegData" --> Sys
+            Sys -- "2. Auth Token / Response" --> User
+
+            classDef entityStyle fill:#e8f5e9,stroke:#2E7D32,stroke-width:1.5px,color:#1b5e20;
+            classDef procStyle fill:#ffffff,stroke:#4CAF50,stroke-width:1.5px,color:#333;
+
+            class User entityStyle;
+            class Sys procStyle;
+        </pre>
+      </div>
+    </div>
+
+    <!-- DFD Level 1 -->
+    <div class="card">
+      <h2>2. DFD Level 1 (System Process Decomposition)</h2>
+      <div class="diagram-container">
+        <pre class="mermaid">
+          graph TB
+            User["User / Client"]
+
+            P1(("1.0 Sanitize & Validate"))
+            P2(("2.0 Register Process"))
+            P3(("3.0 Login Process"))
+
+            DS1[("D1: PostgreSQL Users")]
+            DS2[("D2: LocalStorage")]
+
+            User -- "Raw Input" --> P1
+            P1 -- "Cleaned Data" --> P2
+            P1 -- "Cleaned Credentials" --> P3
+
+            P2 -- "Hashed Password" --> DS1
+            P2 -- "Response Message" --> User
+
+            P3 -- "Query User" --> DS1
+            DS1 -- "User Record" --> P3
+
+            P3 -- "JWT Token" --> DS2
+            P3 -- "Auth Response" --> User
+
+            classDef entityStyle fill:#e8f5e9,stroke:#2E7D32,stroke-width:1.5px,color:#1b5e20;
+            classDef procStyle fill:#ffffff,stroke:#4CAF50,stroke-width:1.5px,color:#333;
+            classDef storeStyle fill:#fff3e0,stroke:#FF9800,stroke-width:1.5px,color:#e65100;
+
+            class User entityStyle;
+            class P1,P2,P3 procStyle;
+            class DS1,DS2 storeStyle;
+        </pre>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      fontSize: 14,
+      flowchart: { useMaxWidth: true, htmlLabels: true }
+    });
+  </script>
+</body>
+</html>
