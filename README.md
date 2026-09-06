@@ -4,7 +4,7 @@
 
 ---
 
-## 📂 System Documentation Dashboard
+## System Documentation Dashboard
 
 โปรเจกต์นี้มาพร้อมกับชุดเอกสารออกแบบระบบและแผนภาพ UML ในรูปแบบ HTML สามารถเปิดดูศูนย์รวมเอกสารได้ที่:
 
@@ -18,7 +18,7 @@
 
 ---
 
-## 💻 กรณีรันแบบ Manual (ไม่ใช้ Docker)
+## กรณีรันแบบ Manual (ไม่ใช้ Docker)
 
 สำหรับผู้ที่ต้องการรันแยกบริการเพื่อทดสอบหรือพัฒนาแบบ Live-Reload บนเครื่องคอมพิวเตอร์โดยตรง
 
@@ -67,14 +67,14 @@
 2. ติดตั้ง Dependencies:
    `npm install`
 3. ตรวจสอบไฟล์ `src/environments/environment.ts` ให้ชี้ API ไปยัง Backend Local:
-   `export const environment = { production: false, apiUrl: 'http://localhost:9087/api/v1' };`
+   `export const environment = { production: false, apiUrl: 'http://localhost:9087/api' };`
 4. สั่งรัน Angular Development Server:
    `ng serve`
    * เข้าใช้งานแอปพลิเคชันผ่านเบราว์เซอร์ที่ `http://localhost:4200`
 
 ---
 
-## 🐳 กรณีรันด้วย Docker (Docker Compose)
+## กรณีรันด้วย Docker (Docker Compose)
 
 เหมาะสำหรับผู้ที่ต้องการรันระบบทั้งหมดผ่าน Container โดยไม่ต้องลง Go, Node.js หรือ PostgreSQL ในเครื่อง
 
@@ -182,7 +182,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 ---
 
-## ✨ ฟีเจอร์หลักของระบบ
+## ฟีเจอร์หลักของระบบ
 
 * **Password Hashing:** เข้ารหัสรหัสผ่านด้วย `bcrypt` ก่อนบันทึกลงฐานข้อมูล
 * **Session Management:** ใช้ **JWT (JSON Web Token)** ในการยืนยันตัวตน
