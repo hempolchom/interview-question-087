@@ -44,46 +44,32 @@
 
 #### 2. ตั้งค่าและรัน Go Backend
 1. เข้าไปที่โฟลเดอร์ Backend
-   ```bash
-   cd go-backend
-   ```
-2. สร้างหรือแก้ไขไฟล์ `.env` สำหรับเชื่อมต่อ Database ในเครื่อง:
-   ```env
-   PORT=9087
-   DB_HOST=localhost
-   DB_PORT=5432
-   DB_USER=postgres
-   DB_PASSWORD=12345
-   DB_NAME=interview_db
-   JWT_SECRET=your_secret_key
-   ```
-3. ติดตั้ง Dependencies และสั่งรัน Server:
-   ```bash
-   go mod download
-   go run main.go
-   ```
+   `cd go-backend`
+2. สร้างไฟล์ `.env` โดยคัดลอกมาจาก `.env.example` (เนื่องจากไฟล์ `.env` ถูกยกเว้นไว้ใน `.gitignore` เพื่อความปลอดภัย):
+   * **Windows (CMD):** `copy .env.example .env`
+   * **Mac / Linux / PowerShell:** `cp .env.example .env`
+3. เปิดไฟล์ `.env` แล้วตั้งค่าพอร์ตและข้อมูลเชื่อมต่อ Database ให้ถูกต้องตามเครื่องของคุณ:
+   `PORT=9087`
+   `DB_HOST=localhost`
+   `DB_PORT=5432`
+   `DB_USER=postgres`
+   `DB_PASSWORD=12345`
+   `DB_NAME=interview_db`
+   `JWT_SECRET=your_secret_key`
+4. ติดตั้ง Dependencies และสั่งรัน Server:
+   `go mod download`
+   `go run main.go`
    * Backend API พร้อมใช้งานที่ `http://localhost:9087`
 
 #### 3. ตั้งค่าและรัน Angular Frontend
 1. เข้าไปที่โฟลเดอร์ Frontend
-   ```bash
-   cd angular-frontend
-   ```
+   `cd angular-frontend`
 2. ติดตั้ง Dependencies:
-   ```bash
-   npm install
-   ```
+   `npm install`
 3. ตรวจสอบไฟล์ `src/environments/environment.ts` ให้ชี้ API ไปยัง Backend Local:
-   ```typescript
-   export const environment = {
-     production: false,
-     apiUrl: 'http://localhost:9087/api/v1'
-   };
-   ```
+   `export const environment = { production: false, apiUrl: 'http://localhost:9087/api/v1' };`
 4. สั่งรัน Angular Development Server:
-   ```bash
-   ng serve
-   ```
+   `ng serve`
    * เข้าใช้งานแอปพลิเคชันผ่านเบราว์เซอร์ที่ `http://localhost:4200`
 
 ---
@@ -106,7 +92,6 @@
 
 #### 1. ไฟล์ `docker-compose.yml`
 
-```yaml
 version: '3.8'
 
 services:
@@ -147,11 +132,9 @@ services:
 
 volumes:
   pgdata:
-```
 
 #### 2. ไฟล์ `go-backend/Dockerfile`
 
-```dockerfile
 FROM golang:1.20-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
@@ -164,11 +147,9 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 EXPOSE 9087
 CMD ["./main"]
-```
 
 #### 3. ไฟล์ `angular-frontend/Dockerfile`
 
-```dockerfile
 FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
@@ -180,16 +161,13 @@ FROM nginx:alpine
 COPY --from=build /app/dist/angular-frontend /usr/share/nginx/html
 EXPOSE 4200
 CMD ["nginx", "-g", "daemon off;"]
-```
 
 ---
 
 ### ขั้นตอนการรันระบบด้วย Docker
 
 1. **สั่งเปิดใช้งานระบบทั้งหมด (Build & Run)**
-   ```bash
-   docker-compose up -d --build
-   ```
+   `docker-compose up -d --build`
 
 2. **เข้าใช้งานแอปพลิเคชันผ่าน Port ที่กำหนด**
    * **Frontend (Angular):** http://localhost:9070
@@ -197,14 +175,10 @@ CMD ["nginx", "-g", "daemon off;"]
    * **PostgreSQL Database:** `localhost:9072` (User: `postgres`, Pass: `12345`, DB: `interview_db`)
 
 3. **สั่งปิดการทำงานระบบ**
-   ```bash
-   docker-compose down
-   ```
+   `docker-compose down`
 
 4. **สั่งลบข้อมูล Database ทั้งหมด (Reset Data)**
-   ```bash
-   docker-compose down -v
-   ```
+   `docker-compose down -v`
 
 ---
 
